@@ -1,4 +1,8 @@
 vim.g.mapleader = ' '
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
+vim.bo.softtabstop = 2
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
@@ -116,8 +120,16 @@ vim.opt.rtp:prepend(lazypath)
 
 -- NOTE: use opts to force a plugin to be added
 require('lazy').setup({
-  { 'andweeb/presence.nvim', opts = { auto_update = true, show_time = true, editing_text = 'Editing %s!' } },
+  { 'andweeb/presence.nvim', opts = { auto_update = true, show_time = true, editing_text = 'Editing %s!' } }, -- discord
 
+  { -- ai
+    'robitx/gp.nvim',
+    config = function()
+      require('gp').setup {
+        openai_api_key = { 'cat', '/home/aler/.config/apikey' },
+      }
+    end,
+  },
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
 
   -- "gc" to comment visual regions/lines
@@ -135,9 +147,6 @@ require('lazy').setup({
       },
     },
   },
-
-  -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
-  -- using config property witch takes a function()
 
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
@@ -348,7 +357,7 @@ require('lazy').setup({
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
+        local disable_filetypes = { cpp = true }
         return {
           timeout_ms = 500,
           lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
@@ -365,7 +374,12 @@ require('lazy').setup({
       },
     },
   },
-
+  { -- AI
+    'supermaven-inc/supermaven-nvim',
+    config = function()
+      require('supermaven-nvim').setup {}
+    end,
+  },
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
     event = 'InsertEnter',
@@ -561,6 +575,7 @@ require('lazy').setup({
   },
 
   require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.neo-tree',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
